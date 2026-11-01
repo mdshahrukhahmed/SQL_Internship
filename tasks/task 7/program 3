@@ -1,0 +1,18 @@
+#https://www.hackerrank.com/challenges/challenges/problem
+WITH ChallengeCounts AS (
+    SELECT c.hacker_id, h.name, COUNT(c.challenge_id) AS c_count
+    FROM Hackers h
+    JOIN Challenges c ON h.hacker_id = c.hacker_id
+    GROUP BY c.hacker_id, h.name
+),
+CountFrequency AS (
+    SELECT c_count, COUNT(*) AS freq
+    FROM ChallengeCounts
+    GROUP BY c_count
+)
+SELECT cc.hacker_id, cc.name, cc.c_count
+FROM ChallengeCounts cc
+JOIN CountFrequency cf ON cc.c_count = cf.c_count
+WHERE cc.c_count = (SELECT MAX(c_count) FROM ChallengeCounts)
+   OR cf.freq = 1
+ORDER BY cc.c_count DESC, cc.hacker_id ASC;
